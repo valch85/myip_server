@@ -1,0 +1,19 @@
+[Unit]
+Description=simple http service
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop valch85/myip-server
+ExecStartPre=-/usr/bin/docker rm valch85/myip-server
+ExecStartPre=/usr/bin/docker pull hashicorp/http-echo
+ExecStart=/usr/bin/docker run -d -p 8081:8081 --name myip-server valch85/myip-server
+ExecStop=/usr/bin/docker stop valch85/myip-server
+TimeoutSec=infinity
+Type=forking
+PIDFile=/var/run/docker.pid
+
+[Install]
+WantedBy=multi-user.target
